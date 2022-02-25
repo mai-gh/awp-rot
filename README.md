@@ -2,11 +2,15 @@
  
 ## Async Week Project - Roguelike Toolkit for Javascript
 
+cave wandering "game", inspired by some classic backend games from the 80s. WIP
+
+
 try it here: https://mai-gh.github.io/awp-rot/
 
 ---
 
 ### Inspriation & Help
+- https://en.wikipedia.org/wiki/Roguelike
 - ./lib comes from https://github.com/ondras/rot.js
 - https://7drl.com/
 - http://www.roguebasin.com/

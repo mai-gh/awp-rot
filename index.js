@@ -105,6 +105,16 @@ const Game = {
         return false;
       },
     },
+    Sight: {
+      name: 'Sight',
+      groupName: 'Sight',
+      init: function(template) {
+        this.sightRadius = template['sightRadius'] || 5;
+      },
+      getSightRadius: function() {
+        return this.sightRadius;
+      }
+    },
   },
 
   // ------------------------------------------------------------------
@@ -120,6 +130,7 @@ const Game = {
     // Set up the properties. We use false by default.
     this.isWalkable = properties['isWalkable'] || false;
     this.isDiggable = properties['isDiggable'] || false;
+    this.blocksLight = (properties['blocksLight'] !== undefined) ? properties['blocksLight'] : true;
   },
 
   Map: function(tiles) {
@@ -127,6 +138,11 @@ const Game = {
     // cache the width and height based
     // on the length of the dimensions of
     // the tiles array
+
+    // setup the field of visions
+    this.fov = [];
+    this.setupFov();
+
     this.width = tiles.length;
     this.height = tiles[0].length;
   },
@@ -159,7 +175,7 @@ const Game = {
         if (inputType === 'keydown') {
           //console.log(`inputData.keyCode: ${inputData.keyCode}`)
           //console.log(`String.fromCharCode(x): ${String.fromCharCode(inputData.keyCode)}`)
-          console.log(`ROT.VK_RETURN: ${ROT.KEYS.VK_RETURN}`)
+          //console.log(`ROT.VK_RETURN: ${ROT.KEYS.VK_RETURN}`)
           if (inputData.keyCode === ROT.KEYS.VK_RETURN) {
             //this.display.clear();
             //this.display.drawText(16,13,  "L O A D I N G . . .");
@@ -247,21 +263,33 @@ const Game = {
         // Make sure we still have enough space to fit an entire game screen
         topLeftY = Math.min(topLeftY, this.map.getHeight() - screenHeight);
 
-        // Iterate through all map cells
+        var visibleCells = {};
+        // Find all visible cells and update the object
+        this.map.getFov(this.player.getZ()).compute(
+            this.player.getX(), this.player.getY(), 
+            this.player.getSightRadius(), 
+            function(x, y, radius, visibility) {
+                visibleCells[x + "," + y] = true;
+            });
+
+
+        // Iterate through all visible map cells
 //        for (var x = 0; x < this.map.getWidth(); x++) {
 //          for (var y = 0; y < this.map.getHeight(); y++) {
         for (let x = topLeftX; x < topLeftX + screenWidth; x++) {
           for (let y = topLeftY; y < topLeftY + screenHeight; y++) {
+            if (visibleCells[x + ',' + y]) {
             // Fetch the glyph for the tile and render it to the screen
             //var glyph = this.map.getTile(x, y).getGlyph();
-            var tile = this.map.getTile(x, y);
+              var tile = this.map.getTile(x, y);
 //            display.draw(x, y,
-            display.draw(
-              x - topLeftX, 
-              y - topLeftY,
-              tile.getChar(), 
-              tile.getForeground(), 
-              tile.getBackground());
+              display.draw(
+                x - topLeftX, 
+                y - topLeftY,
+                tile.getChar(), 
+                tile.getForeground(), 
+                tile.getBackground());
+            }
           }
         }
         display.draw(
@@ -281,11 +309,13 @@ const Game = {
         if (inputType === 'keydown') {
           // If enter is pressed, go to the win screen
           // If escape is pressed, go to lose screen
-          if (inputData.keyCode === ROT.KEYS.VK_RETURN) {
+
+/*          if (inputData.keyCode === ROT.KEYS.VK_RETURN) {
             Game.switchScreen(Game.Screen.winScreen);
           } else if (inputData.keyCode === ROT.KEYS.VK_ESCAPE) {
                 Game.switchScreen(Game.Screen.loseScreen);
           }
+*/
           // Movement
           if ((inputData.keyCode === ROT.KEYS.VK_LEFT) || (inputData.keyCode === ROT.KEYS.VK_H)) {
             this.move(-1, 0);
@@ -434,12 +464,26 @@ Game.Tile.prototype.getGlyph = function() {
 Game.Tile.nullTile = new Game.Tile({})
 Game.Tile.floorTile = new Game.Tile({
     character: '.',
-    isWalkable: true
+    isWalkable: true,
+    blocksLight: false
 });
 Game.Tile.wallTile = new Game.Tile({
     character: '#',
     foreground: 'goldenrod',
-    isDiggable: true
+//    isDiggable: true
+    blocksLight: true
+});
+Game.Tile.stairsUpTile = new Game.Tile({
+    character: '<',
+    foreground: 'white',
+    walkable: true,
+    blocksLight: false
+});
+Game.Tile.stairsDownTile = new Game.Tile({
+    character: '>',
+    foreground: 'white',
+    walkable: true,
+    blocksLight: false
 });
 
 Game.Tile.prototype.getChar = function(){ 
@@ -454,6 +498,10 @@ Game.Tile.prototype.getForeground = function(){
   return this.foreground; 
 };
 
+Game.Tile.prototype.isBlockingLight = function() {
+    return this.blocksLight;
+};
+
 // Make entities inherit all the functionality from glyphs
 //Game.Entity.extend(Game.Glyph);
 
@@ -466,6 +514,9 @@ Game.Entity.prototype.setX = function(x) {
 Game.Entity.prototype.setY = function(y) {
     this.y = y;
 }
+Game.Entity.prototype.setZ = function(z) {
+    this.z = z;
+}
 Game.Entity.prototype.getName = function() {
     return this.name;
 }
@@ -474,6 +525,11 @@ Game.Entity.prototype.getX = function() {
 }
 Game.Entity.prototype.getY   = function() {
     return this.y;
+}
+
+Game.Entity.prototype.getZ = function() {
+    //return this.z;
+    return 0;
 }
 
 Game.Entity.prototype.hasMixin = function(obj) {
@@ -502,7 +558,10 @@ Game.PlayerTemplate = {
     character: '@',
     foreground: 'white',
     background: 'black',
-    mixins: [Game.Mixins.Moveable]
+    maxHp: 40,
+    attackValue: 10,
+    sightRadius: 6,
+    mixins: [Game.Mixins.Moveable,  Game.Mixins.Sight]
 }
 
 
@@ -545,6 +604,33 @@ Game.Map.prototype.getRandomFloorPosition = function() {
     return {x: x, y: y};
 }
 
+
+
+Game.Map.prototype.setupFov = function() {
+    // Keep this in 'map' variable so that we don't lose it.
+    var map = this;
+
+    this.depth = 1;
+
+    // Iterate through each depth level, setting up the field of vision
+    for (var z = 0; z < this.depth; z++) {
+        // We have to put the following code in it's own scope to prevent the
+        // depth variable from being hoisted out of the loop.
+        (function() {
+            // For each depth, we need to create a callback which figures out
+            // if light can pass through a given tile.
+            var depth = z;
+            map.fov.push(
+                new ROT.FOV.DiscreteShadowcasting(function(x, y) {
+                    return !map.getTile(x, y, depth).isBlockingLight();
+                }, {topology: 4}));
+        })();
+    }
+}
+
+Game.Map.prototype.getFov = function(depth) {
+    return this.fov[depth];
+}
 
 // ------------------------------------------------------------------
   

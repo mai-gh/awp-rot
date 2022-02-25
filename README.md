@@ -2,7 +2,7 @@
  
 ## Async Week Project - Roguelike Toolkit for Javascript
 
-
+try it here: https://mai-gh.github.io/awp-rot/
 
 ---
 

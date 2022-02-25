@@ -58,8 +58,17 @@ const Game = {
       enter: function () { console.log("Entered start screen."); },
       exit: function () { console.log("Exited start screen."); },
       render: function (display) { 
-        display.drawText(1,1, "%c{yellow}Javascript Roguelike");
-        display.drawText(1,2, "Press [Enter] to start!");
+        display.drawText(20,4, "%c{yellow}Async Week Project - Rot.js");
+        display.drawText(22,5, "Press [Enter] to start!");
+        display.drawText(30,10,  "┌    ^    ┐ ");
+        display.drawText(31,11, "\\   |   /  ");
+        display.drawText(32,13,  "Y  K  U   ");
+
+        display.drawText(29,15, "<- H  @  L ->");
+
+        display.drawText(32,17, "   B  J  N ");
+        display.drawText(31,19, "  /   |   \\");
+        display.drawText(30,20, "└    V    ┘");
       },
       handleInput: function(inputType, inputData) { 
         // When [Enter] is pressed, go to the play screen
@@ -82,8 +91,8 @@ const Game = {
         console.log("Entered play screen.");
 
         var map = [];
-        var mapWidth = 500;
-        var mapHeight = 500;
+        var mapWidth = 250;
+        var mapHeight = 250;
         for (var x = 0; x < mapWidth; x++) {
           // Create the nested array for the y values
           map.push([]);
@@ -93,17 +102,24 @@ const Game = {
           }
         }
 
+
+        var generator = new ROT.Map.Digger(mapWidth, mapHeight);
+        //var generator = new ROT.Map.Cellular(mapWidth, mapHeight, {timeLimit: 5000});
+        //var generator = new ROT.Map.Uniform(mapWidth, mapHeight, {timeLimit: 5000});
+        //var generator = new ROT.Map.Rogue(mapWidth, mapHeight, {timeLimit: 5000});
+
         // Setup the map generator
-        var generator = new ROT.Map.Cellular(mapWidth, mapHeight);
-        generator.randomize(0.5);
+//        var generator = new ROT.Map.Cellular(mapWidth, mapHeight);
+//        generator.randomize(0.5);
         var totalIterations = 3;
-        // Iteratively smoothen the map
+//        // Iteratively smoothen the map
         for (var i = 0; i < totalIterations - 1; i++) {
           generator.create();
         }
         // Smoothen it one last time and then update our map
         generator.create(function(x,y,v) {
-          if (v === 1) {
+          //if (v === 1) {
+          if (v === 0) {
             map[x][y] = Game.Tile.floorTile;
           } else {
             map[x][y] = Game.Tile.wallTile;
@@ -111,6 +127,15 @@ const Game = {
         });
         // Create our map from the tiles
         this.map = new Game.Map(map);
+
+        //var display = new ROT.Display({fontSize:18});
+      //SHOW(display.getContainer());
+      //document.body.appendChild(display.getContainer());
+      //generator.create(function(x, y, wall) {
+      //  display.draw(x, y, wall ? "#" : ".");
+     // });
+
+
       },
       exit: function () { console.log("Exited play screen."); },
       render: function (display) { 

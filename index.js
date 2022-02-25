@@ -140,8 +140,9 @@ const Game = {
       enter: function () { console.log("Entered start screen."); },
       exit: function () { console.log("Exited start screen."); },
       render: function (display) { 
-        display.drawText(20,4, "%c{yellow}Async Week Project - Rot.js");
-        display.drawText(22,5, "Press [Enter] to start!");
+        display.drawText(20,1, "%c{yellow}Async Week Project - Rot.js");
+        display.drawText(22,4, "Press [Enter] to start!");
+        display.drawText(31,8,  "Controls:");
         display.drawText(30,10,  "┌    ^    ┐ ");
         display.drawText(31,11, "\\   |   /  ");
         display.drawText(32,13,  "Y  K  U   ");
@@ -151,14 +152,17 @@ const Game = {
         display.drawText(32,17, "   B  J  N ");
         display.drawText(31,19, "  /   |   \\");
         display.drawText(30,20, "└    V    ┘");
+        display.drawText(24,22, "(or use the arrow keys)");
       },
       handleInput: function(inputType, inputData) { 
         // When [Enter] is pressed, go to the play screen
         if (inputType === 'keydown') {
           //console.log(`inputData.keyCode: ${inputData.keyCode}`)
           //console.log(`String.fromCharCode(x): ${String.fromCharCode(inputData.keyCode)}`)
-          //console.log(`ROT.VK_RETURN: ${ROT.KEYS.VK_RETURN}`)
+          console.log(`ROT.VK_RETURN: ${ROT.KEYS.VK_RETURN}`)
           if (inputData.keyCode === ROT.KEYS.VK_RETURN) {
+            //this.display.clear();
+            //this.display.drawText(16,13,  "L O A D I N G . . .");
             Game.switchScreen(Game.Screen.playScreen);
           }
         }

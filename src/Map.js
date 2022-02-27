@@ -29,9 +29,9 @@ export class Map {
     // Make sure we are inside the bounds. If we aren't, return
     // null tile.
     if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
-      return Game.Tile.nullTile;
+      return tiles.nullTile;
     } else {
-      return this.tiles[x][y] || Game.Tile.nullTile;
+      return this.tiles[x][y] || tiles.nullTile;
     }
   }
 

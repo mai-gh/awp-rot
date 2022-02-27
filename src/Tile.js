@@ -1,63 +1,65 @@
-import {Glyph} from './Glyph.js';
-
+import { Glyph } from "./Glyph.js";
 
 export class Tile extends Glyph {
   constructor(properties) {
-   super();
+    super();
     properties = properties || {};
-    this.chr = properties['character'] || ' ';
-    this.foreground = properties['foreground'] || 'white';
-    this.background = properties['background'] || 'black';
-    this.isWalkable = properties['isWalkable'] || false;
+    this.chr = properties["character"] || " ";
+    this.foreground = properties["foreground"] || "white";
+    this.background = properties["background"] || "black";
+    this.isWalkable = properties["isWalkable"] || false;
     //this.isDiggable = properties['isDiggable'] || false;
-    this.blocksLight = (properties['blocksLight'] !== undefined) ? properties['blocksLight'] : true;
-  };
+    this.blocksLight =
+      properties["blocksLight"] !== undefined
+        ? properties["blocksLight"]
+        : true;
+  }
 
   isWalkable() {
     return this.isWalkable;
-  };
+  }
 
-  isBlockingLight = function() {
+  isBlockingLight = function () {
     return this.blocksLight;
   };
 
-/*
+  /*
   isDiggable = function() {
       return this.isDiggable;
   }
 */
 
   getGlyph() {
-      return this.glyph;
-  };
-};
+    return this.glyph;
+  }
+}
 
 export const tiles = {
   nullTile: new Tile({}),
 
   floorTile: new Tile({
-    character: '.',
+    character: ".",
     isWalkable: true,
-    blocksLight: false
+    blocksLight: false,
   }),
 
   wallTile: new Tile({
-    character: '#',
-    foreground: 'goldenrod',
-  //    isDiggable: true
-    blocksLight: true
+    character: "#",
+    foreground: "goldenrod",
+    //    isDiggable: true
+    blocksLight: true,
   }),
 
   stairsUpTile: new Tile({
-    character: '<',
-    foreground: 'white',
+    character: "<",
+    foreground: "white",
     walkable: true,
-    blocksLight: false
+    blocksLight: false,
   }),
   stairsDownTile: new Tile({
-    character: '>',
-    foreground: 'white',
+    character: ">",
+    foreground: "white",
     walkable: true,
-    blocksLight: false
+    blocksLight: false,
   }),
-}
+};

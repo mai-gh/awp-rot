@@ -1,5 +1,5 @@
-export class  MoveableMixin {
-  name = 'Moveable';
+export class MoveableMixin {
+  name = "Moveable";
   tryMove(x, y, map) {
     const tile = map.getTile(x, y);
     if (tile.isWalkable) {
@@ -9,16 +9,16 @@ export class  MoveableMixin {
       return true;
     }
     return false;
-  };
-};
+  }
+}
 
-export  class SightMixin {
-  name = 'Sight';
-  groupName = 'Sight';
+export class SightMixin {
+  name = "Sight";
+  groupName = "Sight";
   init(template) {
-    this.sightRadius = template['sightRadius'] || 5;
-  };
+    this.sightRadius = template["sightRadius"] || 5;
+  }
   getSightRadius() {
     return this.sightRadius;
-  };
-};
+  }
+}

@@ -1,27 +1,32 @@
-import {Glyph} from './Glyph.js';
+import { Glyph } from "./Glyph.js";
 
-export class Entity extends Glyph{ 
+export class Entity extends Glyph {
   constructor(properties) {
     super();
     properties = properties || {};
-    this.chr = properties['character'] || ' ';
-    this.foreground = properties['foreground'] || 'white';
-    this.background = properties['background'] || 'black';
-    this.name = properties['name'] || '';
-    this.x = properties['x'] || 0;
-    this.y = properties['y'] || 0;
+    this.chr = properties["character"] || " ";
+    this.foreground = properties["foreground"] || "white";
+    this.background = properties["background"] || "black";
+    this.name = properties["name"] || "";
+    this.x = properties["x"] || 0;
+    this.y = properties["y"] || 0;
     this.attachedMixins = {};
-    const mixins = properties['mixins'] || [];
+    const mixins = properties["mixins"] || [];
     for (let i = 0; i < mixins.length; i++) {
-      const protoObj = Object.getPrototypeOf(mixins[i])
-      const protoNames = Object.getOwnPropertyNames(protoObj)
-      let expandedMixin = {...mixins[i]}
+      const protoObj = Object.getPrototypeOf(mixins[i]);
+      const protoNames = Object.getOwnPropertyNames(protoObj);
+      let expandedMixin = { ...mixins[i] };
       for (let key of protoNames) {
-        const val = protoObj[key]
-        expandedMixin = {...expandedMixin, [key]: val}
+        const val = protoObj[key];
+        expandedMixin = { ...expandedMixin, [key]: val };
       }
       for (let key in expandedMixin) {
-        if (key != 'init' && key != 'name' && key != 'constructor' && !this.hasOwnProperty(key)) {
+        if (
+          key != "init" &&
+          key != "name" &&
+          key != "constructor" &&
+          !this.hasOwnProperty(key)
+        ) {
           this[key] = mixins[i][key];
         }
       }
@@ -32,43 +37,42 @@ export class Entity extends Glyph{
         mixins[i].init.call(this, properties);
       }
     }
-  };
-  
+  }
+
   setName(name) {
-      this.name = name;
+    this.name = name;
   }
   setX(x) {
-      this.x = x;
+    this.x = x;
   }
   setY(y) {
-      this.y = y;
+    this.y = y;
   }
   setZ(z) {
-      this.z = z;
+    this.z = z;
   }
   getName() {
-      return this.name;
+    return this.name;
   }
   getX() {
-      return this.x;
+    return this.x;
   }
-  getY  () {
-      return this.y;
+  getY() {
+    return this.y;
   }
-  
+
   getZ() {
-      //return this.z;
-      return 0;
+    //return this.z;
+    return 0;
   }
 
   hasMixin(obj) {
     // Allow passing the mixin itself or the name as a string
-    console.log('hasMixin(obj)', obj)
-    if (typeof obj === 'object') {
-        return this.attachedMixins[obj.name];
+    console.log("hasMixin(obj)", obj);
+    if (typeof obj === "object") {
+      return this.attachedMixins[obj.name];
     } else {
-        return this.attachedMixins[name];
+      return this.attachedMixins[name];
     }
   }
-
-};
+}

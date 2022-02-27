@@ -1,7 +1,7 @@
 import { Game } from './src/Game.js';
 import { StartScreen } from './src/Screens.js';
 
-const myGame = new Game();
-myGame.init();
-document.body.appendChild(myGame.getDisplay().getContainer());
-myGame.switchScreen(new StartScreen(myGame));
+const game = new Game();
+game.init();
+document.body.appendChild(game.getDisplay().getContainer());
+game.switchScreen(new StartScreen(game));

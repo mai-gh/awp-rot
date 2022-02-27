@@ -7,6 +7,7 @@ import { Map } from './Map.js';
 export class StartScreen {
   constructor(game) {
     this.game = game
+//    this.display = this.game.getDisplay()
   }
   enter() { console.log("Entered start screen."); };
   exit() { console.log("Exited start screen."); };
@@ -26,14 +27,10 @@ export class StartScreen {
     display.drawText(24,22, "(or use the arrow keys)");
   };
   handleInput(inputType, inputData) { 
-    // When [Enter] is pressed, go to the play screen
     if (inputType === 'keydown') {
-      //console.log(`inputData.keyCode: ${inputData.keyCode}`)
-      //console.log(`String.fromCharCode(x): ${String.fromCharCode(inputData.keyCode)}`)
-      //console.log(`ROT.VK_RETURN: ${ROT.KEYS.VK_RETURN}`)
       if (inputData.keyCode === ROT.KEYS.VK_RETURN) {
-        //this.display.clear();
-        //this.display.drawText(16,13,  "L O A D I N G . . .");
+//        this.game.getDisplay().clear();
+//        this.game.getDisplay().drawText(16,13,  "L O A D I N G . . .");
 //        console.log('zzz', this.game)
 //        console.log('bbbbb', this)
         //myGame.switchScreen(myScreen.playScreen);

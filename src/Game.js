@@ -13,8 +13,8 @@ export class Game {
 
   init() {
     this.display = new ROT.Display({width: this.screenWidth, height: this.screenHeight, fontSize: 18});
-    var game = this; // So that we don't lose this
-    var bindEventToScreen = function(event) {
+    const game = this; // So that we don't lose this
+    const bindEventToScreen = function(event) {
         window.addEventListener(event, function(e) {
             if (game.currentScreen !== null) {
                 game.currentScreen.handleInput(event, e);
@@ -40,7 +40,6 @@ export class Game {
     this.getDisplay().clear();
     this.currentScreen = screen;
     if (!this.currentScreen !== null) {
-//        console.log(this);
         this.currentScreen.enter();
         this.currentScreen.render(this.display);
     }

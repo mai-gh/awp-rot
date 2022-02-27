@@ -21,6 +21,3 @@ try it here: https://mai-gh.github.io/awp-rot/
 
 ### Notes / Todo / Etc.
 
-*please excuse my use of `var`, the tutorial & docs were for ES5*
-
-code will be refactored to ES6 style at a later point
